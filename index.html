@@ -124,7 +124,7 @@ p{margin:0 0 12px}
 #timerbar.on{display:block}
 #timerbar .inner{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:12px}
 #timerbar .big{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;min-width:104px}
-#timerbar .lbl{font-size:13px;color:var(--muted);flex:1;line-height:1.3}
+#timerbar .lbl{font-size:13px;color:var(--muted);flex:1;min-width:0;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #timerbar.rest .big{color:var(--accent)}
 #timerbar.hold .big{color:var(--ok)}
 .progress{height:3px;background:var(--surface-2);border-radius:2px;overflow:hidden;margin-bottom:9px}
@@ -137,6 +137,7 @@ p{margin:0 0 12px}
   padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(0,0,0,.08)}
 .finish .st{font-size:13px;color:var(--muted);flex:1}
 .finish .st b{color:var(--text)}
+body.timer-on .finish{bottom:calc(92px + var(--safe-b))}
 
 /* ---------- history ---------- */
 .hist{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);overflow:hidden;margin-top:12px}
@@ -189,6 +190,12 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color
   .week-row{grid-template-columns:1fr;gap:2px}
   #timerbar .big{font-size:30px;min-width:92px}
 }
+@media (max-width:440px){
+  .nav-inner{padding:8px 8px;gap:5px}
+  .tabs{gap:0}
+  .nav button.tab{padding:7px 7px;font-size:13.5px}
+  .icon-btn{padding:6px 8px}
+}
 @media (max-width:370px){ .card-top{grid-template-columns:1fr} .vid{max-width:190px} }
 
 .chip.plan{white-space:normal;overflow:visible;text-overflow:clip}
@@ -203,7 +210,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color
     <button class="tab" data-tab="nuan">Нюансы</button>
     <button class="tab" data-tab="hist">История</button>
   </div>
-  <button class="icon-btn" id="themeBtn">тема</button>
+  <button class="icon-btn" id="themeBtn" aria-label="Тема">◐</button>
 </div></nav>
 
 <div class="wrap">
@@ -547,7 +554,8 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color
    "Сначала — только лопатки: сведи и опусти их вниз, к тазу. Без рук. Прочувствуй.",
    "Удерживая это положение лопаток, оторви прямые руки от пола на 5–10 см. Высоко поднимать не нужно.",
    "Задержись на 2 секунды, опусти.",
-   "Ключевое: шея расслаблена, голова не запрокидывается, поясница не прогибается — живот слегка подтянут, лобковая кость прижата к полу."
+   "Ключевое: шея расслаблена, голова не запрокидывается, поясница не прогибается — живот слегка подтянут, лобковая кость прижата к полу.",
+   "Уровень 3 — Y-T-W: после Y сделай те же подъёмы с руками в стороны буквой T, затем с согнутыми локтями, прижатыми к корпусу, буквой W. Лопатки всё время вниз."
   ],
   "breath": "Выдох на подъёме, вдох на опускании.",
   "mistakes": [
@@ -611,7 +619,8 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color
    "На выдохе выжми таз вверх, сжимая ягодицы, до положения «стол»: корпус и бёдра параллельны полу, колени под 90°.",
    "Голову откидывай назад только если шея комфортна — иначе держи подбородок нейтрально.",
    "Задержись на 2 секунды вверху, прочувствуй ягодицы и переднюю поверхность бедра.",
-   "Опустись контролируемо, не падай."
+   "Опустись контролируемо, не падай.",
+   "Уровень 3: в верхней точке выпрями одну ногу вперёд на 2 секунды, верни, затем другую. Таз не опускается и не перекашивается."
   ],
   "breath": "Выдох — вверх, вдох — вниз. Вверху дыши, не держи воздух.",
   "mistakes": [
@@ -679,7 +688,8 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color
    "Верхняя рука на поясе или вытянута вверх.",
    "Удерживая таз на высоте, подтяни колено верхней ноги к груди и верни обратно.",
    "Главное правило: таз НЕ опускается ни на сантиметр в течение всего подхода.",
-   "Смени сторону."
+   "Смени сторону.",
+   "Облегчённый вариант (уровень 1): нижнее колено на полу, ноги согнуты — прямая линия от колена до головы."
   ],
   "breath": "Выдох при подтягивании колена, вдох при возврате.",
   "mistakes": [
@@ -778,7 +788,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--border);color
   "check": "Тянет глубоко в ягодице, иногда сбоку от неё. Тупое, терпимое ощущение.",
   "clip": "clips/e19.mp4"
  }
-};
+};;
 
 const DAYS = [
  {
@@ -2089,9 +2099,39 @@ if (!ST.sessions || typeof ST.sessions !== "object") ST.sessions = {};
   }
   try { localStorage.removeItem("ptp-session"); } catch (e) {}
 })();
+var PFX = "ptp-";
 function skey() { return DAYS[ST.day].id + ":" + ST.level; }
 function newSession() {
   return { dayId: DAYS[ST.day].id, level: ST.level, startedAt: null, log: {} };
+}
+var STALE = 12 * 3600 * 1000;
+function toHistory(s) {
+  var sets = 0, clean = {};
+  Object.keys(s.log || {}).forEach(function (k) {
+    var v = (s.log[k] || []).filter(function (x) { return x > 0; });
+    if (v.length) { clean[k] = v; sets += v.length; }
+  });
+  if (!sets) return 0;
+  var now = Date.now(), start = s.startedAt || now, last = s.lastAt || start;
+  var end = now - last < 30 * 60000 ? now : last + 60000;
+  ST.history.push({ startedAt: start, dayId: s.dayId, level: s.level, log: clean, sets: sets,
+    min: Math.max(1, Math.round((end - start) / 60000)) });
+  ST.history.sort(function (a, b) { return a.startedAt - b.startedAt; });
+  save(PFX + "history", ST.history);
+  return sets;
+}
+function sweepStale() {
+  var moved = false, now = Date.now();
+  Object.keys(ST.sessions).forEach(function (k) {
+    var s = ST.sessions[k];
+    if (s && !s.startedAt) { delete ST.sessions[k]; return; }
+    if (s && s.startedAt && now - (s.lastAt || s.startedAt) > STALE) {
+      if (toHistory(s)) moved = true;
+      delete ST.sessions[k];
+    }
+  });
+  saveSess();
+  return moved;
 }
 function sess() {
   var k = skey();
@@ -2171,16 +2211,17 @@ function finishTimer() {
 function stopTimer() {
   clearInterval(T.tick); T.tick = null; T.running = false;
   keepAwake(false);
-  $("#timerbar").classList.remove("on");
+  $("#timerbar").classList.remove("on"); document.body.classList.remove("timer-on");
 }
 function addTime(s) {
   if (!T.running) return;
-  T.endAt += s * 1000; T.total += s; renderTimer();
+  T.endAt += s * 1000; T.total += s; T.left = Math.max(0, Math.round((T.endAt - Date.now()) / 1000)); renderTimer();
 }
+function plural(n, a, b, c) { var m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; }
 function fmt(s) { var m = Math.floor(s / 60), r = s % 60; return m > 0 ? m + ":" + (r < 10 ? "0" : "") + r : String(r); }
 function renderTimer() {
   var bar = $("#timerbar");
-  bar.classList.add("on");
+  bar.classList.add("on"); document.body.classList.add("timer-on");
   bar.classList.toggle("rest", T.type === "rest");
   bar.classList.toggle("hold", T.type === "hold");
   $("#tm-big", bar).textContent = fmt(T.left);
@@ -2307,14 +2348,14 @@ function renderHistory() {
       }).join("");
       return '<div class="hrow" data-h="' + i + '">' +
         '<div class="l1"><span class="d">' + dstr(s.startedAt) + '</span>' +
-        '<span class="m">День ' + esc(s.dayId) + ' · уровень ' + (s.level + 1) + ' · ' + s.sets + ' подходов · ' + s.min + ' мин</span></div>' +
+        '<span class="m">День ' + esc(s.dayId) + ' · уровень ' + (s.level + 1) + ' · ' + s.sets + ' ' + plural(s.sets, "подход", "подхода", "подходов") + ' · ' + s.min + ' мин</span></div>' +
         '<div class="det">' + names + '</div></div>';
     }).join("") + '</div>';
   }
   h += '<div class="btn-row" style="margin-top:14px">' +
        '<button class="btn small" id="expJson">Выгрузить историю в файл</button>' +
        '<button class="btn small ghost" id="impJson">Загрузить из файла</button>' +
-       '<input type="file" id="impFile" accept="application/json" class="hidden"></div>' +
+       '<input type="file" id="impFile" accept="application/json,.json" class="hidden"></div>' +
        '<p class="lede" style="margin-top:10px">История хранится только на этом устройстве. Выгружай файл время от времени, если не хочешь её потерять.</p>';
   $("#history").innerHTML = h;
 }
@@ -2339,7 +2380,8 @@ document.addEventListener("click", function (e) {
 
   if (t.id === "themeBtn") {
     var root = document.documentElement, cur = root.getAttribute("data-theme");
-    var nx = cur === "dark" ? "light" : cur === "light" ? "" : "dark";
+    var eff = cur || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    var nx = eff === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", nx); save("ptp-theme", nx); return;
   }
 
@@ -2375,6 +2417,7 @@ document.addEventListener("click", function (e) {
     s.log[k] = s.log[k] || [];
     s.log[k][idx] = val;
     if (!s.startedAt) s.startedAt = Date.now();
+    s.lastAt = Date.now();
     saveSess();
     // отдых
     var bi = +k.split(":")[0], ii = +k.split(":")[1];
@@ -2407,16 +2450,7 @@ document.addEventListener("click", function (e) {
     var sets = 0;
     Object.keys(s2.log).forEach(function (k) { sets += s2.log[k].filter(function (v) { return v > 0; }).length; });
     if (!sets) { alert("Пока не записано ни одного подхода."); return; }
-    var clean = {};
-    Object.keys(s2.log).forEach(function (k) {
-      var v = s2.log[k].filter(function (x) { return x > 0; });
-      if (v.length) clean[k] = v;
-    });
-    ST.history.push({
-      startedAt: s2.startedAt || Date.now(), dayId: s2.dayId, level: s2.level, log: clean, sets: sets,
-      min: Math.max(1, Math.round((Date.now() - (s2.startedAt || Date.now())) / 60000))
-    });
-    save("ptp-history", ST.history);
+    toHistory(s2);
     ST.sessions[skey()] = newSession(); saveSess();
     renderTrain(); renderHistory(); setTab("hist");
     return;
@@ -2426,10 +2460,15 @@ document.addEventListener("click", function (e) {
   if (hr) { hr.classList.toggle("open"); return; }
 
   if (t.id === "expJson") {
+    var fname = "posture-history-" + new Date().toISOString().slice(0, 10) + ".json";
     var blob = new Blob([JSON.stringify(ST.history, null, 1)], { type: "application/json" });
+    try {
+      var file = new File([blob], fname, { type: "application/json" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file] }).catch(function () {}); return; }
+    } catch (e2) {}
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "posture-history-" + new Date().toISOString().slice(0, 10) + ".json";
+    a.download = fname;
     a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
     return;
   }
@@ -2447,10 +2486,15 @@ document.addEventListener("change", function (e) {
         var arr = JSON.parse(fr.result);
         if (!Array.isArray(arr)) throw 0;
         arr = arr.filter(function (x) { return x && x.startedAt && x.log && typeof x.log === "object"; });
-        ST.history = arr; save("ptp-history", arr); renderHistory();
+        var seen = {};
+        ST.history.forEach(function (x) { seen[x.startedAt] = 1; });
+        arr.forEach(function (x) { if (!seen[x.startedAt]) { ST.history.push(x); seen[x.startedAt] = 1; } });
+        ST.history.sort(function (a, b) { return a.startedAt - b.startedAt; });
+        save("ptp-history", ST.history); renderHistory();
       } catch (err) { alert("Не удалось прочитать файл."); }
     };
     fr.readAsText(e.target.files[0]);
+    e.target.value = "";
   }
 });
 
@@ -2464,7 +2508,14 @@ document.addEventListener("keydown", function (e) {
 });
 
 /* ═════════ старт ═════════ */
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === "visible" && sweepStale()) { renderTrain(); renderHistory(); }
+});
+
 (function init() {
+  sweepStale();
+  if (["train", "lib", "nuan", "hist"].indexOf(ST.tab) < 0) ST.tab = "train";
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {}); } catch (e) {}
   var th = ls("ptp-theme", "");
   if (th) document.documentElement.setAttribute("data-theme", th);
   renderWeek(); renderTrain(); renderLibrary(); renderHistory();
